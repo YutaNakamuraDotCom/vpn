@@ -1,0 +1,8 @@
+version: '2'
+services:
+  vpn-test:
+    build: /home/yu/Documents/all_project/vpn/vpn-test
+    ports:
+      - '5555:5555'
+      - '500:500/udp'
+      - '4500:4500/udp'
