@@ -8,6 +8,34 @@ wget https://github.com/SoftEtherVPN/SoftEtherVPN_Stable/releases/download/v4.32
 tar -xvf softether-vpnserver* &&\
 #実行可能ファイルの生成
 cd vpnserver && make  i_read_and_agree_the_license_agreement
-RUN cd ../ && mv vpnserver /usr/local &&\
-chmod 600 * && chmod 700 vpncmd && chmod 700 vpnserver
+#premission setting and startup script
+RUN cd vpnserver &&\
+chmod 600 * && chmod 700 vpncmd && chmod 700 vpnserver &&\
+echo -e '\n\
+#!/bin/sh\n\
+# chkconfig: 2345 99 01\n\
+# description: SoftEther VPN Server\n\
+DAEMON=/usr/local/vpnserver/vpnserver\n\
+LOCK=/var/lock/subsys/vpnserver\n\
+test -x $DAEMON || exit 0\n\
+case "$1" in\n\
+start)\n\
+$DAEMON start\n\
+touch $LOCK\n\
+;;\n\
+stop)\n\
+$DAEMON stop\n\
+rm $LOCK\n\
+;;\n\
+restart)\n\
+$DAEMON stop\n\
+sleep 3\n\
+$DAEMON start\n\
+;;\n\
+*)\n\
+echo "Usage: $0 {start|stop|restart}"\n\
+exit 1\n\
+esac\n\
+exit 0\n\
+' >> /etc/init.d/vpnserver
 CMD ["/usr/local/vpnserver/vpnserver", "execsvc"]
