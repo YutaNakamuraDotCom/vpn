@@ -4,5 +4,6 @@ services:
     build: /home/vpn/softetherServer
     ports:
       - '5555:5555'
+      - '443:443'
       - '500:500/udp'
       - '4500:4500/udp'
